@@ -187,7 +187,7 @@ class MinishootWorld(World):
             state = base_state.copy()
             for item in self.get_pre_fill_items():
                 self.collect(state, item)
-            state.sweep_for_events(locations=self.get_locations())
+            state.sweep_for_advancements(locations=self.get_locations())
             return state
         
         randomized_pools = self.get_randomized_pools()
@@ -196,7 +196,7 @@ class MinishootWorld(World):
         state = CollectionState(self.multiworld)
         for item in self.itempool:
             self.collect(state, item)
-        state.sweep_for_events(locations=self.get_locations())
+        state.sweep_for_advancements(locations=self.get_locations())
 
         for dungeon, item_datas in self.pre_fill_item_datas_by_dungeons.items():
             if not item_datas:

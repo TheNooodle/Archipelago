@@ -26,7 +26,9 @@ bard = 'Bard'
 d4_reward = 'Dungeon 4 Reward'
 dark_key = 'Dark Key'
 scarab_key = 'Scarab Key'
-progressive_family_member = 'Progressive Family Member'
+family_child = 'Family Child'
+family_parent_1 = 'Family Parent 1'
+family_parent_2 = 'Family Parent 2'
 primordial_crystal = "Primordial Crystal"
 power_of_protection = "Power of protection"
 scarab = "Scarab"
@@ -109,7 +111,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_open_sunken_temple': lambda state: state.has(surf, player) and can_fight(state, options, 4) and state.can_reach_region(sunken_city_west_island, player) and state.can_reach_region(sunken_city_city, player) and state.can_reach_region(sunken_city_east, player),
         'can_light_desert_grotto_torches': lambda state: state.has(supershot, player) and state.can_reach_region(desert_grotto_west_drop, player) and state.can_reach_region(desert_grotto_east_drop, player),
         'can_clear_both_d5_arenas': lambda state: state.can_reach_region(d5_west_wing, player) and state.can_reach_region(d5_east_wing, player) and can_fight(state, options, 5) and state.has(dash, player),
-        'can_free_family': lambda state: state.has(progressive_family_member, player, 3),
+        'can_free_family': lambda state: state.has(family_child, player) and state.has(family_parent_1, player) and state.has(family_parent_2, player),
         'cannot_surf': lambda state: not state.has(surf, player),
         'have_cleared_d5': lambda state: state.can_reach_region(d5_boss, player),
         'forest_is_blocked': lambda state: options.blocked_forest,
