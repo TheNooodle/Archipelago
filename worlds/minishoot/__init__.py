@@ -35,7 +35,7 @@ class MinishootLocation(Location):
 
 class MinishootWorld(World):
     """
-    Shamelessly copied from worlds/tunic/__init__.py
+    Fly into a charming handcrafted world and go on an adventure that mixes up open exploration with crispy twin-stick shooter action. Fight your way from the shiny overworld to the deepest caves, improve your ship and overcome the dungeons' bosses to rescue your friends!
     """
     game = "Minishoot Adventures"
     web = MinishootWeb()
@@ -131,7 +131,7 @@ class MinishootWorld(World):
                     if not location:
                         raise ValueError(f"Could not find location for dungeon reward {item_name}")
                     location.place_locked_item(self.create_item(item_name))
-                # For dungeon keys, place them in the appropriate dungeon (it no keysanity).
+                # For dungeon keys, place them in the appropriate dungeon (if no keysanity).
                 elif data.pool == MinishootPool.dungeon_small_key and not self.options.key_sanity:
                     dungeon = get_dungeon_for_item(item_name)
 

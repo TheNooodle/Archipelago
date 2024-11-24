@@ -48,6 +48,11 @@ sunken_city_fountain = 'Sunken City - Fountain'
 sunken_city_west_island = 'Sunken City - West Island'
 sunken_city_west_torch = 'Sunken City - West torch'
 
+# This is a rudimentary implementation of a rule parser for Minishoot logic.
+# Basically, it allows for predicates to be defined in the form of strings, and then evaluated in the context of a given state.
+# Those predicates can be combined using "and" and "or" operators, with "and" having higher precedence.
+# For example, the expression "can_fight and can_surf or can_dash" would be parsed as "(can_fight and can_surf) or can_dash".
+# Some predicates can take arguments, which are passed in parentheses after the predicate name (e.g. "have_d1_keys(2)").
 def simple_parse(expression: str, state: CollectionState, world) -> bool:
     player = world.player
     options = world.options
