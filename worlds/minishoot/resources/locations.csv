@@ -53,7 +53,7 @@ Dungeon 1 - Near boss,XP Crystals x10,XP Crystals,Dungeon 1 - After Bridge,can_d
 Dungeon 1 - Near east armored spinner,Small Key (Dungeon 1),Dungeon Small Key,Dungeon 1 - Entrance,can_dash and can_destroy_crystals
 Dungeon 1 - Near west armored spinner,XP Crystals x10,XP Crystals,Dungeon 1 - Entrance,can_fight_lvl2 or can_dash
 Dungeon 1 - North West Arena,Small Key (Dungeon 1),Dungeon Small Key,Dungeon 1 - After Bridge,can_dash and can_fight_lvl2
-Dungeon 1 - Platform after crystal wall ,HP Crystal Shard,Default,Dungeon 1 - After Bridge,can_dash
+Dungeon 1 - Platform after crystal wall,HP Crystal Shard,Default,Dungeon 1 - After Bridge,can_dash
 Dungeon 1 - South item,Boss Key (Dungeon 1),Dungeon Big Key,Dungeon 1 - Entrance,can_dash and have_d1_keys(4)
 Dungeon 1 - West bridge hidden item,Energy Crystal Shard,Default,Dungeon 1 - Entrance,can_fight_lvl2 or can_dash
 Dungeon 2 - Central item,Boss Key (Dungeon 2),Dungeon Big Key,Dungeon 2 - Main,can_destroy_rocks and can_light_torches and have_d2_keys(4)
