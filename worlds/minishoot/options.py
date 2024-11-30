@@ -11,7 +11,7 @@ class NpcSanity(Toggle):
 
 class ScarabSanity(Toggle):
     """
-    /!\ NOT YET IMPLEMENTED CLIENT SIDE, MUST BE SET TO FALSE /!\ Randomizes the scarabs in the world.
+    Randomizes the scarabs in the world.
     """
     internal_name = "scarab_sanity"
     display_name = "Scarab Sanity"

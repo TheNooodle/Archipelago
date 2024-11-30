@@ -104,9 +104,8 @@ class MinishootWorld(World):
             randomized_pools.append(MinishootPool.npc)
         if self.options.shard_sanity:
             randomized_pools.append(MinishootPool.xp_crystals)
-        # Not yet implemented
-        # if self.options.scarab_sanity:
-        #     randomized_pools.append(MinishootPool.scarab)
+        if self.options.scarab_sanity:
+            randomized_pools.append(MinishootPool.scarab)
 
         return randomized_pools
 
