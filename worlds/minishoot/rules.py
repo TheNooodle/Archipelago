@@ -77,7 +77,6 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_dash': lambda state: state.has(dash, player),
         'can_surf': lambda state: state.has(surf, player),
         'can_boost': lambda state: state.has(boost, player),
-        'can_destroy_debris': lambda state: state.has(progressive_cannon, player),
         'can_destroy_bushes': lambda state: state.has(progressive_cannon, player),
         'can_destroy_ruins': lambda state: state.has(progressive_cannon, player),
         'have_d1_keys': lambda state, arg: state.has(d1_small_key, player, arg),
