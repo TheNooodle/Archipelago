@@ -127,7 +127,7 @@ class MinishootWorld(World):
         ]
 
     def get_fallback_items(self) -> List[str]:
-        return ["XP Crystals x10", "XP Crystals x25", "XP Crystals x40", "Super Crystals x2", "Super Crystals x5", "Super Crystals x10", "Super Crystals x15"]
+        return ["Super Crystals x2", "Super Crystals x5", "Super Crystals x10", "Super Crystals x15"]
     
     def get_filler_item_name(self) -> str:
         return self.random.choice(self.get_fallback_items())
