@@ -60,6 +60,34 @@ class CannonLevelLogicalRequirements(DefaultOnToggle):
     internal_name = "cannon_level_logical_requirements"
     display_name = "Cannon Level Logical Requirements"
 
+class BoostlessSpringboards(Toggle):
+    """
+    When this setting is off, the logic will require you to use the boost to jump from springboards.
+    When this setting is on, the dash will be enough to jump from springboards logically, which make the dash even more useful.
+    """
+    internal_name = "boostless_springboards"
+    display_name = "Boostless Springboards"
+
+class BoostlessSpiritRaces(Toggle):
+    """
+    When this setting is off, races against spirits will logically require the boost.
+    When this setting is on, the logic will assume that you can complete those races with the dash instead.
+    Note that you will still need the boost to complete the the spirits races of the Beach, Scarab Temple and Sunken City.
+    Also note that this setting may require you to farm some XP to level up your speed.
+    """
+    internal_name = "boostless_spirit_races"
+    display_name = "Boostless Spirit Races"
+
+class BoostlessTorchRaces(Toggle):
+    """
+    When this setting is off, timed torch races will logically require the boost.
+    When this setting is on, the logic will assume that you can complete those races without it.
+    Note that this setting may require you to farm some XP to level up your speed.
+    """
+    internal_name = "boostless_torch_races"
+    display_name = "Boostless Torch Races"
+
+
 class CompletionGoals(Choice):
     """
     Set the goals required to finish the game.
@@ -83,4 +111,7 @@ class MinishootOptions(PerGameCommonOptions):
     simple_temple_exit: SimpleTempleExit
     blocked_forest: BlockedForest
     cannon_level_logical_requirements: CannonLevelLogicalRequirements
+    boostless_springboards: BoostlessSpringboards
+    boostless_spirit_races: BoostlessSpiritRaces
+    boostless_torch_races: BoostlessTorchRaces
     completion_goals: CompletionGoals
