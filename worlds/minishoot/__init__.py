@@ -265,6 +265,7 @@ class MinishootWorld(World):
             "shard_sanity": self.options.shard_sanity.value,
             "key_sanity": self.options.key_sanity.value,
             "boss_key_sanity": self.options.boss_key_sanity.value,
+            "show_archipelago_item_category": self.options.show_archipelago_item_category.value,
             "simple_temple_exit": self.options.simple_temple_exit.value,
             "blocked_forest": self.options.blocked_forest.value,
             "cannon_level_logical_requirements": self.options.cannon_level_logical_requirements.value,

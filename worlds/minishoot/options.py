@@ -37,6 +37,13 @@ class BossKeySanity(Toggle):
     internal_name = "boss_key_sanity"
     display_name = "Boss Key Sanity"
 
+class ShowArchipelagoItemCategory(DefaultOnToggle):
+    """
+    When enabled, Archipelago items sprites will indicate if its an important item (with an arrow pointing up), an helpful one (with the default icon), or not important (with a black and white sprite).
+    """
+    internal_name = "show_archipelago_item_category"
+    display_name = "Show Archipelago item category"
+
 class SimpleTempleExit(DefaultOnToggle):
     """
     Change the exits of the 3 temples, so that they don't require the vanilla power to leave without requiring a save and quit.
@@ -108,6 +115,7 @@ class MinishootOptions(PerGameCommonOptions):
     shard_sanity: ShardSanity
     key_sanity: KeySanity
     boss_key_sanity: BossKeySanity
+    show_archipelago_item_category: ShowArchipelagoItemCategory
     simple_temple_exit: SimpleTempleExit
     blocked_forest: BlockedForest
     cannon_level_logical_requirements: CannonLevelLogicalRequirements
