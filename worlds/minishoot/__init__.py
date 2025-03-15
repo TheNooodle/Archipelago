@@ -9,7 +9,7 @@ from .items import MinishootItemData, item_name_to_id, item_table
 from .locations import location_name_to_id, location_table
 from .regions import region_table
 from .transitions import transition_table
-from .dungeons import dungeon_reward_location_mapping, get_dungeon_for_item, get_dungeon_for_location, get_dungeons
+from .dungeons import dungeon_reward_location_mapping, get_dungeon_for_item, get_dungeons
 from .zones import zone_table
 from worlds.AutoWorld import WebWorld, World
 
@@ -44,14 +44,19 @@ class MinishootWorld(World):
 
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
+    ap_world_version = "0.4.0"
 
     def create_item(self, name: str) -> MinishootItem:
         if name in self.get_ignored_items():
             name = self.get_filler_item_name()
-        item_data = item_table[name]
-        item = MinishootItem(name, item_data.classification, self.item_name_to_id[name], self.player)
-        if item.name == "Progressive Cannon" and not self.options.cannon_level_logical_requirements:
+        item_name = name
+        if self.options.progressive_dash.value == 1 and item_name in ["Dash", "Spirit Dash"]:
+            item_name = "Progressive Dash"
+        item_data = item_table[item_name]
+        item = MinishootItem(item_name, item_data.classification, self.item_name_to_id[item_name], self.player)
+        if item.name == "Progressive Cannon" and self.options.ignore_cannon_level_requirements:
             item.classification = ItemClassification.useful
+
         return item
 
     def create_regions(self) -> None:
@@ -127,7 +132,11 @@ class MinishootWorld(World):
         ]
 
     def get_fallback_items(self) -> List[str]:
-        return ["Super Crystals x2", "Super Crystals x5", "Super Crystals x10", "Super Crystals x15"]
+        fallback_items = ["Super Crystals x2", "Super Crystals x5", "Super Crystals x10", "Super Crystals x15"]
+        if self.options.add_trap_items:
+            fallback_items += ["Primordial Scarab Dialog"] * 2
+
+        return fallback_items
     
     def get_filler_item_name(self) -> str:
         return self.random.choice(self.get_fallback_items())
@@ -277,14 +286,20 @@ class MinishootWorld(World):
             "shard_sanity": self.options.shard_sanity.value,
             "key_sanity": self.options.key_sanity.value,
             "boss_key_sanity": self.options.boss_key_sanity.value,
+            "add_trap_items": self.options.add_trap_items.value,
+            "trap_items_appearance": self.options.trap_items_appearance.value,
             "show_archipelago_item_category": self.options.show_archipelago_item_category.value,
             "simple_temple_exit": self.options.simple_temple_exit.value,
             "blocked_forest": self.options.blocked_forest.value,
-            "cannon_level_logical_requirements": self.options.cannon_level_logical_requirements.value,
+            "ignore_cannon_level_requirements": self.options.ignore_cannon_level_requirements.value,
             "boostless_springboards": self.options.boostless_springboards.value,
             "boostless_spirit_races": self.options.boostless_spirit_races.value,
             "boostless_torch_races": self.options.boostless_torch_races.value,
-            "completion_goals": self.options.completion_goals.value
+            "enable_primordial_crystal_logic": self.options.enable_primordial_crystal_logic.value,
+            "progressive_dash": self.options.progressive_dash.value,
+            "dashless_gaps": self.options.dashless_gaps.value,
+            "completion_goals": self.options.completion_goals.value,
+            "ap_world_version": self.ap_world_version
         }
 
         return slot_data
