@@ -138,6 +138,9 @@ class MinishootWorld(World):
         randomized_pools = self.get_randomized_pools()
 
         self.pre_fill_items: List[MinishootItem] = []
+        self.pre_fill_small_key_item_datas_by_dungeons: Dict[str, List[MinishootItemData]] = {
+            dungeon_name: [] for dungeon_name in get_dungeons()
+        }
         self.pre_fill_item_datas_by_dungeons: Dict[str, List[MinishootItemData]] = {
             dungeon_name: [] for dungeon_name in get_dungeons()
         }
@@ -159,7 +162,7 @@ class MinishootWorld(World):
 
                     if not dungeon:
                         raise ValueError(f"Could not find dungeon for key {item_name}")
-                    self.pre_fill_item_datas_by_dungeons[dungeon].append(data)
+                    self.pre_fill_small_key_item_datas_by_dungeons[dungeon].append(data)
                     self.pre_fill_items.append(self.create_item(item_name))
                 elif data.pool == MinishootPool.dungeon_big_key and not self.options.boss_key_sanity:
                     dungeon = get_dungeon_for_item(item_name)
@@ -224,7 +227,11 @@ class MinishootWorld(World):
             self.collect(state, item)
         state.sweep_for_advancements(locations=self.get_locations())
 
-        for dungeon, item_datas in self.pre_fill_item_datas_by_dungeons.items():
+        for dungeon in get_dungeons():
+            # Pre-fill dungeon with small keys first, then with other items.
+            small_key_item_datas = self.pre_fill_small_key_item_datas_by_dungeons[dungeon]
+            dungeon_item_datas = self.pre_fill_item_datas_by_dungeons[dungeon]
+            item_datas = small_key_item_datas + dungeon_item_datas
             if not item_datas:
                 continue
 
@@ -232,11 +239,8 @@ class MinishootWorld(World):
             dungeon_locations  = []
             for location_name in dungeon_zone.locations:
                 location_data = location_table[location_name]
-                if location_data.pool in randomized_pools:
+                if location_data.pool in randomized_pools and location_data.pool != MinishootPool.dungeon_reward:
                     dungeon_locations.append(self.multiworld.get_location(location_name, self.player))
-
-            # For each dungeon, we remove the boss reward location from the location list, because it will be filled.
-            dungeon_locations = [location for location in dungeon_locations if location.name not in dungeon_reward_location_mapping.values()]
 
             dungeon_items: List[MinishootItem] = [self.create_item(item_data.name) for item_data in item_datas]
             if not dungeon_items or not dungeon_locations:
@@ -245,8 +249,16 @@ class MinishootWorld(World):
                 self.pre_fill_items.remove(item)
 
             self.multiworld.random.shuffle(dungeon_locations)
-            fill_restrictive(self.multiworld, prefill_state(state), dungeon_locations, dungeon_items,
-                                single_player_placement=True, lock=True, allow_partial=False)
+            fill_restrictive(
+                multiworld=self.multiworld,
+                base_state=prefill_state(state),
+                locations=dungeon_locations,
+                item_pool=dungeon_items,
+                single_player_placement=True,
+                lock=True,
+                allow_partial=False,
+                name="Minishoot Dungeon Pre-fill",
+            )
             
         # Stolen from OOT APWorld : Locations which are not sendable must be converted to events
         for loc in self.get_locations():
