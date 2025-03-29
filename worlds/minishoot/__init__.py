@@ -44,7 +44,11 @@ class MinishootWorld(World):
 
     item_name_to_id = item_name_to_id
     location_name_to_id = location_name_to_id
-    ap_world_version = "0.4.0"
+
+    # This version is checked in the client to ensure that the client and the server are on the same page feature-wise.
+    # Corrolary: The client will throw an error to the player if the server is on a different version.
+    # This is to avoid issues where a player would use a client with a different version than the APWorld.
+    ap_world_version = "0.3.0"
 
     def create_item(self, name: str) -> MinishootItem:
         if name in self.get_ignored_items():
@@ -289,7 +293,6 @@ class MinishootWorld(World):
             "add_trap_items": self.options.add_trap_items.value,
             "trap_items_appearance": self.options.trap_items_appearance.value,
             "show_archipelago_item_category": self.options.show_archipelago_item_category.value,
-            "simple_temple_exit": self.options.simple_temple_exit.value,
             "blocked_forest": self.options.blocked_forest.value,
             "ignore_cannon_level_requirements": self.options.ignore_cannon_level_requirements.value,
             "boostless_springboards": self.options.boostless_springboards.value,

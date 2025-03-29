@@ -66,13 +66,6 @@ class ShowArchipelagoItemCategory(DefaultOnToggle):
     internal_name = "show_archipelago_item_category"
     display_name = "Show Archipelago item category"
 
-class SimpleTempleExit(DefaultOnToggle):
-    """
-    Change the exits of the 3 temples, so that they don't require the vanilla power to leave without requiring a save and quit.
-    """
-    internal_name = "simple_temple_exit"
-    display_name = "Simple Temple Exit"
-
 class BlockedForest(DefaultOnToggle):
     """
     Replace the bushes of the secret pond in the forest with rocks. This make the south forest area blocked until you have the supershot.
@@ -169,7 +162,6 @@ class MinishootOptions(PerGameCommonOptions):
     add_trap_items: AddTrapItems
     trap_items_appearance: TrapItemsAppearance
     show_archipelago_item_category: ShowArchipelagoItemCategory
-    simple_temple_exit: SimpleTempleExit
     blocked_forest: BlockedForest
     ignore_cannon_level_requirements: IgnoreCannonLevelRequirements
     boostless_springboards: BoostlessSpringboards
