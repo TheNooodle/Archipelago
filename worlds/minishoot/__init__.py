@@ -48,7 +48,7 @@ class MinishootWorld(World):
     # This version is checked in the client to ensure that the client and the server are on the same page feature-wise.
     # Corrolary: The client will throw an error to the player if the server is on a different version.
     # This is to avoid issues where a player would use a client with a different version than the APWorld.
-    ap_world_version = "0.3.0"
+    ap_world_version = "0.4.0"
 
     def create_item(self, name: str) -> MinishootItem:
         if name in self.get_ignored_items():
