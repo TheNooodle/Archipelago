@@ -145,18 +145,18 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_destroy_shells': lambda state: True,
         'have_d3_keys': lambda state, arg: state.has(d3_small_key, player, arg),
         'have_d3_boss_key': lambda state: state.has(d3_boss_key, player),
-        'can_light_all_scarab_temple_torches': lambda state: state.can_reach_region(scarab_temple_bottom_left_torch, player) and state.can_reach_region(scarab_temple_bottom_right_torch, player) and state.can_reach_region(scarab_temple_top_left_torch, player) and state.can_reach_region(scarab_temple_top_right_torch, player) and state.has(supershot, player),
+        'can_light_all_scarab_temple_torches': lambda state: can_surf(state) and state.has(supershot, player) and can_fight(state, options, 4),
         'can_dodge_purple_bullets': lambda state: can_dash(state, options) and can_spirit_dash(state, options),
         'can_unlock_final_boss_door': lambda state: state.has(dark_heart, player),
-        'can_open_north_city_bridge': lambda state: state.can_reach_region(sunken_city_fountain, player) and can_fight(state, options, 4) and can_surf(state),
+        'can_open_north_city_bridge': lambda state: can_dash(state, options) and can_fight(state, options, 4) and can_surf(state) and can_destroy_walls(state, options),
         'can_free_bard': lambda state: state.has(bard, player),
         'have_all_spirits': lambda state: state.has(spirit, player, 8),
         'can_open_dungeon_5': lambda state: state.has(d1_reward, player) and state.has(d2_reward, player) and state.has(d3_reward, player) and state.has(d4_reward, player) and state.has(dark_key, player),
         'can_unlock_primordial_cave_door': lambda state: state.has(scarab_key, player),
-        'can_light_city_torches': lambda state: state.has(supershot, player) and state.can_reach_region(sunken_city_west_torch, player) and state.can_reach_region(sunken_city_east_torch, player),
-        'can_open_sunken_temple': lambda state: can_surf(state) and can_fight(state, options, 4) and state.can_reach_region(sunken_city_west_island, player) and state.can_reach_region(sunken_city_city, player) and state.can_reach_region(sunken_city_east, player),
-        'can_light_desert_grotto_torches': lambda state: state.has(supershot, player) and state.can_reach_region(desert_grotto_west_drop, player) and state.can_reach_region(desert_grotto_east_drop, player),
-        'can_clear_both_d5_arenas': lambda state: state.can_reach_region(d5_west_wing, player) and state.can_reach_region(d5_east_wing, player) and can_fight(state, options, 5) and can_dash(state, options),
+        'can_light_city_torches': lambda state: state.has(supershot, player) and can_surf(state) and can_fight(state, options, 4) and can_use_springboards(state, options),
+        'can_open_sunken_temple': lambda state: can_surf(state) and can_fight(state, options, 4) and can_dash(state, options) and can_destroy_walls(state, options),
+        'can_light_desert_grotto_torches': lambda state: state.has(supershot, player) and (can_surf(state) or can_cross_gaps(state, options, "normal")) and can_fight(state, options, 3),
+        'can_clear_both_d5_arenas': lambda state: can_fight(state, options, 5) and can_dash(state, options) and can_surf(state),
         'can_free_family': lambda state: state.has(family_child, player) and state.has(family_parent_1, player) and state.has(family_parent_2, player),
         'forest_is_blocked': lambda state: options.blocked_forest,
         'forest_is_open': lambda state: not options.blocked_forest,
@@ -165,7 +165,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_use_springboards': lambda state: can_use_springboards(state, options),
         'can_race_spirits': lambda state: can_race_spirits(state, options),
         'can_race_torches': lambda state: can_race_torches(state, options),
-        'can_open_swamp_tower': lambda state: state.can_reach_region(swamp_south_west_island, player)
+        'can_open_swamp_tower': lambda state: can_surf(state) or can_use_springboards(state, options)
     }
 
     # Split the expression by "or" and "and" using regular expressions
