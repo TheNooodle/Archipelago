@@ -39,7 +39,7 @@ class MinishootWorld(World):
     """
     game = "Minishoot Adventures"
     web = MinishootWeb()
-    options = MinishootOptions
+    options: MinishootOptions
     options_dataclass = MinishootOptions
 
     item_name_to_id = item_name_to_id
@@ -51,13 +51,8 @@ class MinishootWorld(World):
     ap_world_version = "0.4.0"
 
     def create_item(self, name: str) -> MinishootItem:
-        if name in self.get_ignored_items():
-            name = self.get_filler_item_name()
-        item_name = name
-        if self.options.progressive_dash.value == 1 and item_name in ["Dash", "Spirit Dash"]:
-            item_name = "Progressive Dash"
-        item_data = item_table[item_name]
-        item = MinishootItem(item_name, item_data.classification, self.item_name_to_id[item_name], self.player)
+        item_data = item_table[name]
+        item = MinishootItem(name, item_data.classification, self.item_name_to_id[name], self.player)
         if item.name == "Progressive Cannon" and self.options.ignore_cannon_level_requirements:
             item.classification = ItemClassification.useful
 
@@ -145,6 +140,15 @@ class MinishootWorld(World):
     def get_filler_item_name(self) -> str:
         return self.random.choice(self.get_fallback_items())
 
+    def try_create_item(self, item_name: str) -> MinishootItem:
+        name = item_name
+        if name in self.get_ignored_items():
+            name = self.get_filler_item_name()
+        if self.options.progressive_dash.value == 1 and name in ["Dash", "Spirit Dash"]:
+            name = "Progressive Dash"
+        
+        return self.create_item(name)
+
     def create_items(self) -> None:
         minishoot_items: List[MinishootItem] = []
 
@@ -168,7 +172,7 @@ class MinishootWorld(World):
                     location = self.multiworld.get_location(dungeon_reward_location_mapping[item_name], self.player)
                     if not location:
                         raise ValueError(f"Could not find location for dungeon reward {item_name}")
-                    location.place_locked_item(self.create_item(item_name))
+                    location.place_locked_item(self.try_create_item(item_name))
                 # For dungeon keys, place them in the appropriate dungeon (if no keysanity).
                 elif data.pool == MinishootPool.dungeon_small_key and not self.options.key_sanity:
                     dungeon = get_dungeon_for_item(item_name)
@@ -176,21 +180,21 @@ class MinishootWorld(World):
                     if not dungeon:
                         raise ValueError(f"Could not find dungeon for key {item_name}")
                     self.pre_fill_small_key_item_datas_by_dungeons[dungeon].append(data)
-                    self.pre_fill_items.append(self.create_item(item_name))
+                    self.pre_fill_items.append(self.try_create_item(item_name))
                 elif data.pool == MinishootPool.dungeon_big_key and not self.options.boss_key_sanity:
                     dungeon = get_dungeon_for_item(item_name)
 
                     if not dungeon:
                         raise ValueError(f"Could not find dungeon for key {item_name}")
                     self.pre_fill_item_datas_by_dungeons[dungeon].append(data)
-                    self.pre_fill_items.append(self.create_item(item_name))
+                    self.pre_fill_items.append(self.try_create_item(item_name))
                 # For other items, place them in the multiworld item pool.
                 elif data.pool in randomized_pools:
-                    minishoot_item: MinishootItem = self.create_item(item_name)
+                    minishoot_item: MinishootItem = self.try_create_item(item_name)
                     minishoot_items.append(minishoot_item)
             # We add one filler item to compensate for the cannon level that is added automatically.
             if item_name == "Progressive Cannon":
-                minishoot_item: MinishootItem = self.create_item(self.get_filler_item_name())
+                minishoot_item: MinishootItem = self.try_create_item(self.get_filler_item_name())
                 minishoot_items.append(minishoot_item)
                     
         for location_name, data in location_table.items():
@@ -198,7 +202,7 @@ class MinishootWorld(World):
                 location = self.multiworld.get_location(location_name, self.player)
                 if not location:
                     raise ValueError(f"Could not find location {location_name}")
-                location.place_locked_item(self.create_item(data.vanilla_item_name))
+                location.place_locked_item(self.try_create_item(data.vanilla_item_name))
 
         self.itempool = minishoot_items
         self.multiworld.itempool += minishoot_items
@@ -255,7 +259,7 @@ class MinishootWorld(World):
                 if location_data.pool in randomized_pools and location_data.pool != MinishootPool.dungeon_reward:
                     dungeon_locations.append(self.multiworld.get_location(location_name, self.player))
 
-            dungeon_items: List[MinishootItem] = [self.create_item(item_data.name) for item_data in item_datas]
+            dungeon_items: List[MinishootItem] = [self.try_create_item(item_data.name) for item_data in item_datas]
             if not dungeon_items or not dungeon_locations:
                 continue
             for item in dungeon_items:
@@ -281,7 +285,7 @@ class MinishootWorld(World):
     def post_fill(self) -> None:
         # Fill the remaining locations with filler items.
         for location in self.multiworld.get_unfilled_locations(self.player):
-            location.place_locked_item(self.create_item(self.get_filler_item_name()))
+            location.place_locked_item(self.try_create_item(self.get_filler_item_name()))
             
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data: Dict[str, Any] = {
