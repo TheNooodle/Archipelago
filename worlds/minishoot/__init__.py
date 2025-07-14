@@ -48,7 +48,7 @@ class MinishootWorld(World):
     # This version is checked in the client to ensure that the client and the server are on the same page feature-wise.
     # Corrolary: The client will throw an error to the player if the server is on a different version.
     # This is to avoid issues where a player would use a client with a different version than the APWorld.
-    ap_world_version = "0.4.0"
+    ap_world_version = "0.5.0"
 
     def create_item(self, name: str) -> MinishootItem:
         item_data = item_table[name]
@@ -112,6 +112,8 @@ class MinishootWorld(World):
             randomized_pools.append(MinishootPool.xp_crystals)
         if self.options.scarab_sanity:
             randomized_pools.append(MinishootPool.scarab)
+        if self.options.spirit_sanity:
+            randomized_pools.append(MinishootPool.spirit)
 
         return randomized_pools
     
@@ -291,6 +293,7 @@ class MinishootWorld(World):
         slot_data: Dict[str, Any] = {
             "npc_sanity": self.options.npc_sanity.value,
             "scarab_sanity": self.options.scarab_sanity.value,
+            "spirit_sanity": self.options.spirit_sanity.value,
             "shard_sanity": self.options.shard_sanity.value,
             "key_sanity": self.options.key_sanity.value,
             "boss_key_sanity": self.options.boss_key_sanity.value,

@@ -16,6 +16,13 @@ class ScarabSanity(Toggle):
     internal_name = "scarab_sanity"
     display_name = "Scarab Sanity"
 
+class SpiritSanity(Toggle):
+    """
+    Randomizes the spirit in the world.
+    """
+    internal_name = "spirit_sanity"
+    display_name = "Spirit Sanity"
+
 class ShardSanity(Toggle):
     """
     Randomizes the XP shards "groups" (not individual crystals) in the world.
@@ -156,6 +163,7 @@ class CompletionGoals(Choice):
 class MinishootOptions(PerGameCommonOptions):
     npc_sanity: NpcSanity
     scarab_sanity: ScarabSanity
+    spirit_sanity: SpiritSanity
     shard_sanity: ShardSanity
     key_sanity: KeySanity
     boss_key_sanity: BossKeySanity
