@@ -113,6 +113,11 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
     
     def have_all_spirits(state: CollectionState, options: MinishootOptions) -> bool:
         return state.has(spirit, player, options.spirit_tower_requirement.value)
+    
+    def can_buy_from_scarab_collector(state: CollectionState, options: MinishootOptions, index1: int) -> bool:
+        if options.scarab_items_cost == 0:
+            return True
+        return state.has(scarab, player, index1 * options.scarab_items_cost.value)
 
     conditions = {
         'true': lambda state: True,
@@ -139,7 +144,12 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'have_d2_keys': lambda state, arg: state.has(d2_small_key, player, arg),
         'have_d2_boss_key': lambda state: state.has(d2_boss_key, player),
         'can_destroy_walls': lambda state: can_destroy_walls(state, options),
-        'can_obtain_scarabs': lambda state, arg: state.has(scarab, player, arg),
+        'can_buy_from_scarab_collector_1': lambda state, arg: can_buy_from_scarab_collector(state, options, 1),
+        'can_buy_from_scarab_collector_2': lambda state, arg: can_buy_from_scarab_collector(state, options, 2),
+        'can_buy_from_scarab_collector_3': lambda state, arg: can_buy_from_scarab_collector(state, options, 3),
+        'can_buy_from_scarab_collector_4': lambda state, arg: can_buy_from_scarab_collector(state, options, 4),
+        'can_buy_from_scarab_collector_5': lambda state, arg: can_buy_from_scarab_collector(state, options, 5),
+        'can_buy_from_scarab_collector_6': lambda state, arg: can_buy_from_scarab_collector(state, options, 6),
         'can_free_scarab_collector': lambda state: state.has(scarab_collector, player),
         'can_light_torches': lambda state: state.has(supershot, player),
         'can_destroy_plants': lambda state: True,
