@@ -51,6 +51,8 @@ class MinishootWorld(World):
     ap_world_version = "0.5.0"
 
     def create_item(self, name: str) -> MinishootItem:
+        if name not in item_table:
+            raise ValueError(f"Could not find item {name} in item table")
         item_data = item_table[name]
         item = MinishootItem(name, item_data.classification, self.item_name_to_id[name], self.player)
         if item.name == "Progressive Cannon" and self.options.ignore_cannon_level_requirements:
@@ -92,18 +94,30 @@ class MinishootWorld(World):
 
             region.add_exits(exits)
 
-        normal_ending_victory_region = self.multiworld.get_region("Dungeon 5 - Boss", self.player)
-        normal_ending_victory_location = MinishootLocation(self.player, "Dungeon 5 - Beat the boss", None, normal_ending_victory_region)
+        normal_ending_victory_location = self.multiworld.get_location("Dungeon 5 - Beat the boss", self.player)
         normal_ending_victory_location.place_locked_item(MinishootItem("Normal Ending Victory", ItemClassification.progression, None, self.player))
 
-        true_ending_victory_region = self.multiworld.get_region("Snow", self.player)
-        true_ending_victory_location = MinishootLocation(self.player, "Snow - Beat the Unchosen", None, true_ending_victory_region)
+        true_ending_victory_location = self.multiworld.get_location("Snow - Beat the Unchosen", self.player)
         true_ending_victory_location.place_locked_item(MinishootItem("True Ending Victory", ItemClassification.progression, None, self.player))
 
-        self.multiworld.completion_condition[self.player] = lambda state: (self.options.completion_goals == "snow" or state.has("Normal Ending Victory", self.player)) and (self.options.completion_goals == "dungeon_5" or state.has("True Ending Victory", self.player))
-        normal_ending_victory_region.locations.append(normal_ending_victory_location)
-        true_ending_victory_region.locations.append(true_ending_victory_location)
+        if self.options.completion_goals == "spirit_tower":
+            spirit_tower_victory_location = self.multiworld.get_location("Spirit Tower - Item", self.player)
+            spirit_tower_victory_location.place_locked_item(self.try_create_item("Golden Crystal Heart"))
+
+        self.multiworld.completion_condition[self.player] = lambda state: self.completion_condition(state)
     
+    def completion_condition(self, state: CollectionState) -> bool:
+        if self.options.completion_goals == "dungeon_5":
+            return state.has("Normal Ending Victory", self.player)
+        elif self.options.completion_goals == "snow":
+            return state.has("True Ending Victory", self.player)
+        elif self.options.completion_goals == "dungeon_5_and_snow":
+            return state.has("Normal Ending Victory", self.player) and state.has("True Ending Victory", self.player)
+        elif self.options.completion_goals == "spirit_tower":
+            return state.has("Golden Crystal Heart", self.player)
+        else:
+            return False
+
     def get_randomized_pools(self) -> List[MinishootPool]:
         randomized_pools = [MinishootPool.default, MinishootPool.dungeon_small_key, MinishootPool.dungeon_big_key, MinishootPool.dungeon_reward]
         if self.options.npc_sanity:
@@ -200,7 +214,7 @@ class MinishootWorld(World):
                 minishoot_items.append(minishoot_item)
                     
         for location_name, data in location_table.items():
-            if data.pool not in randomized_pools:
+            if data.pool not in randomized_pools and data.pool != MinishootPool.goal:
                 location = self.multiworld.get_location(location_name, self.player)
                 if not location:
                     raise ValueError(f"Could not find location {location_name}")
@@ -299,6 +313,9 @@ class MinishootWorld(World):
             "boss_key_sanity": self.options.boss_key_sanity.value,
             "add_trap_items": self.options.add_trap_items.value,
             "trap_items_appearance": self.options.trap_items_appearance.value,
+            "shop_cost_modifier": self.options.shop_cost_modifier.value,
+            "scarab_items_cost": self.options.scarab_items_cost.value,
+            "spirit_tower_requirement": self.options.spirit_tower_requirement.value,
             "show_archipelago_item_category": self.options.show_archipelago_item_category.value,
             "blocked_forest": self.options.blocked_forest.value,
             "ignore_cannon_level_requirements": self.options.ignore_cannon_level_requirements.value,

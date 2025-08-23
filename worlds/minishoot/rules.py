@@ -110,7 +110,9 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
             return True
         
         return False
-        
+    
+    def have_all_spirits(state: CollectionState, options: MinishootOptions) -> bool:
+        return state.has(spirit, player, options.spirit_tower_requirement.value)
 
     conditions = {
         'true': lambda state: True,
@@ -150,7 +152,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_unlock_final_boss_door': lambda state: state.has(dark_heart, player),
         'can_open_north_city_bridge': lambda state: can_dash(state, options) and can_fight(state, options, 4) and can_surf(state) and can_destroy_walls(state, options),
         'can_free_bard': lambda state: state.has(bard, player),
-        'have_all_spirits': lambda state: state.has(spirit, player, 8),
+        'have_all_spirits': lambda state: have_all_spirits(state, options),
         'can_open_dungeon_5': lambda state: state.has(d1_reward, player) and state.has(d2_reward, player) and state.has(d3_reward, player) and state.has(d4_reward, player) and state.has(dark_key, player),
         'can_unlock_primordial_cave_door': lambda state: state.has(scarab_key, player),
         'can_light_city_torches': lambda state: state.has(supershot, player) and can_surf(state) and can_fight(state, options, 4) and can_use_springboards(state, options),
