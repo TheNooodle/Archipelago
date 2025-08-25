@@ -46,9 +46,9 @@ class MinishootWorld(World):
     location_name_to_id = location_name_to_id
 
     # This version is checked in the client to ensure that the client and the server are on the same page feature-wise.
-    # Corrolary: The client will throw an error to the player if the server is on a different version.
+    # The client will throw an error to the player if the server is on a different version.
     # This is to avoid issues where a player would use a client with a different version than the APWorld.
-    ap_world_version = "0.5.0"
+    ap_world_version = "0.5.1"
 
     def create_item(self, name: str) -> MinishootItem:
         if name not in item_table:
@@ -182,6 +182,8 @@ class MinishootWorld(World):
             quantity = data.quantity_in_item_pool
             if item_name == "Progressive Cannon":
                 quantity -= 1 # The plugin will add the first cannon level automatically.
+            if item_name == "Ancient Tablet" and self.options.completion_goals == "spirit_tower":
+                quantity -= 1 # We remove one Ancient Tablet to make room for the Golden Crystal Heart.
             for i in range(0, quantity):
                 # For dungeon rewards, place them in the vanilla locations.
                 if data.pool == MinishootPool.dungeon_reward:
