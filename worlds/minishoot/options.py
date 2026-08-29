@@ -162,6 +162,19 @@ class EnablePrimordialCrystalLogic(Toggle):
     internal_name = "enable_primordial_crystal_logic"
     display_name = "Enable Primordial Crystal Logic"
 
+class PrimordialCrystalActivationThreshold(Range):
+    """
+    Set the Primordial Crystal activation threshold.
+    If your current HP percentage is greater than or equal to this value and you have the Primordial Crystal, it will activate.
+    This allows for more flexibility in the use of the Primordial Crystal, especially in combination with the "Enable Primordial Crystal Logic" option.
+    This option does not affect logic. The value must be between 10 and 100.
+    """
+    internal_name = "primordial_crystal_activation_threshold"
+    display_name = "Primordial Crystal Activation Threshold"
+    range_start = 10
+    range_end = 100
+    default = 100
+
 class ProgressiveDash(Toggle):
     """
     When enabled, the game will fuse the Dash and the Spirit Dash into two cumulative progressive upgrades.
@@ -169,6 +182,15 @@ class ProgressiveDash(Toggle):
     """
     internal_name = "progressive_dash"
     display_name = "Progressive Dash"
+
+class SurfSanity(Toggle):
+    """
+    When enabled, each water type requires its own Surf item to be navigable.
+    Replace the existing Surf item with 5 different Surf items, one for each water type.
+    Water types are: Normal, Blue, Soiled, Dungeon and Gold.
+    """
+    internal_name = "surf_sanity"
+    display_name = "Surf Sanity"
 
 class DashlessGaps(Choice):
     """
@@ -218,6 +240,8 @@ class MinishootOptions(PerGameCommonOptions):
     boostless_spirit_races: BoostlessSpiritRaces
     boostless_torch_races: BoostlessTorchRaces
     enable_primordial_crystal_logic: EnablePrimordialCrystalLogic
+    primordial_crystal_activation_threshold: PrimordialCrystalActivationThreshold
     progressive_dash: ProgressiveDash
+    surf_sanity: SurfSanity
     dashless_gaps: DashlessGaps
     completion_goals: CompletionGoals

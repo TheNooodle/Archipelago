@@ -33,6 +33,11 @@ spirit = "Spirit"
 spirit_dash = 'Spirit Dash'
 supershot = 'Supershot'
 surf = 'Surf'
+surf_normal = 'Clean Surf'
+surf_blue = 'Blue Surf'
+surf_soiled = 'Dirty Surf'
+surf_dungeon = 'Void Surf'
+surf_gold = 'Golden Surf'
 
 d5_boss = 'Dungeon 5 - Boss'
 d5_central_wing = 'Dungeon 5 - Central wing'
@@ -76,8 +81,20 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
             return state.has(progressive_dash, player, 2)
         return state.has(spirit_dash, player)
     
-    def can_surf(state: CollectionState) -> bool:
-        return state.has(surf, player)
+    def can_surf(state: CollectionState, options: MinishootOptions, water_type: str = "normal") -> bool:
+        if not options.surf_sanity.value:
+            return state.has(surf, player)
+        else:
+            if water_type == "normal":
+                return state.has(surf_normal, player)
+            if water_type == "blue":
+                return state.has(surf_blue, player)
+            if water_type == "soiled":
+                return state.has(surf_soiled, player)
+            if water_type == "dungeon":
+                return state.has(surf_dungeon, player)
+            if water_type == "gold":
+                return state.has(surf_gold, player)
     
     def can_destroy_walls(state: CollectionState, options: MinishootOptions) -> bool:
         if options.enable_primordial_crystal_logic:
@@ -123,7 +140,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'true': lambda state: True,
         'can_free_blacksmith': lambda state: state.has(blacksmith, player),
         'can_free_mercant': lambda state: state.has(mercant, player),
-        'can_obtain_super_crystals': lambda state, arg: can_dash(state, options) and state.has(supershot, player) and can_surf(state), # TODO: Implement this
+        'can_obtain_super_crystals': lambda state, arg: can_dash(state, options) and state.has(supershot, player) and can_surf(state, options, "normal"), # TODO: Implement this
         'can_fight': lambda state: can_fight(state, options, 1),
         'can_fight_lvl2': lambda state: can_fight(state, options, 2),
         'can_fight_lvl3': lambda state: can_fight(state, options, 3),
@@ -132,7 +149,11 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_cross_gaps': lambda state: can_cross_gaps(state, options, "normal"),
         'can_cross_tight_gaps': lambda state: can_cross_gaps(state, options, "tight"),
         'can_cross_very_tight_gaps': lambda state: can_cross_gaps(state, options, "very_tight"),
-        'can_surf': lambda state: can_surf(state),
+        'can_surf_normal': lambda state: can_surf(state, options, "normal"),
+        'can_surf_blue': lambda state: can_surf(state, options, "blue"),
+        'can_surf_soiled': lambda state: can_surf(state, options, "soiled"),
+        'can_surf_dungeon': lambda state: can_surf(state, options, "dungeon"),
+        'can_surf_gold': lambda state: can_surf(state, options, "gold"),
         'can_boost': lambda state: state.has(boost, player),
         'can_destroy_bushes': lambda state: True,
         'can_destroy_ruins': lambda state: True,
@@ -157,18 +178,18 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_destroy_shells': lambda state: True,
         'have_d3_keys': lambda state, arg: state.has(d3_small_key, player, arg),
         'have_d3_boss_key': lambda state: state.has(d3_boss_key, player),
-        'can_light_all_scarab_temple_torches': lambda state: can_surf(state) and state.has(supershot, player) and can_fight(state, options, 4),
+        'can_light_all_scarab_temple_torches': lambda state: can_surf(state, options, "normal") and state.has(supershot, player) and can_fight(state, options, 4),
         'can_dodge_purple_bullets': lambda state: can_dash(state, options) and can_spirit_dash(state, options),
         'can_unlock_final_boss_door': lambda state: state.has(dark_heart, player),
-        'can_open_north_city_bridge': lambda state: can_dash(state, options) and can_fight(state, options, 4) and can_surf(state) and can_destroy_walls(state, options),
+        'can_open_north_city_bridge': lambda state: can_dash(state, options) and can_fight(state, options, 4) and can_surf(state, options, "gold") and can_surf(state, options, "soiled") and can_destroy_walls(state, options),
         'can_free_bard': lambda state: state.has(bard, player),
         'have_all_spirits': lambda state: have_all_spirits(state, options),
         'can_open_dungeon_5': lambda state: state.has(d1_reward, player) and state.has(d2_reward, player) and state.has(d3_reward, player) and state.has(d4_reward, player) and state.has(dark_key, player),
         'can_unlock_primordial_cave_door': lambda state: state.has(scarab_key, player),
-        'can_light_city_torches': lambda state: state.has(supershot, player) and can_surf(state) and can_fight(state, options, 4) and can_use_springboards(state, options),
-        'can_open_sunken_temple': lambda state: can_surf(state) and can_fight(state, options, 4) and can_dash(state, options) and can_destroy_walls(state, options),
-        'can_light_desert_grotto_torches': lambda state: state.has(supershot, player) and (can_surf(state) or can_cross_gaps(state, options, "normal")) and can_fight(state, options, 3),
-        'can_clear_both_d5_arenas': lambda state: can_fight(state, options, 5) and can_dash(state, options) and can_surf(state),
+        'can_light_city_torches': lambda state: state.has(supershot, player) and can_surf(state, options, "gold") and can_surf(state, options, "soiled") and can_fight(state, options, 4) and can_use_springboards(state, options),
+        'can_open_sunken_temple': lambda state: can_surf(state, options, "gold") and can_surf(state, options, "soiled") and can_fight(state, options, 4) and can_dash(state, options) and can_destroy_walls(state, options),
+        'can_light_desert_grotto_torches': lambda state: state.has(supershot, player) and (can_surf(state, options, "normal") or can_cross_gaps(state, options, "normal")) and can_fight(state, options, 3),
+        'can_clear_both_d5_arenas': lambda state: can_fight(state, options, 5) and can_dash(state, options) and can_surf(state, options, "soiled"),
         'can_free_family': lambda state: state.has(family_child, player) and state.has(family_parent_1, player) and state.has(family_parent_2, player),
         'forest_is_blocked': lambda state: options.blocked_forest,
         'forest_is_open': lambda state: not options.blocked_forest,
@@ -177,7 +198,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_use_springboards': lambda state: can_use_springboards(state, options),
         'can_race_spirits': lambda state: can_race_spirits(state, options),
         'can_race_torches': lambda state: can_race_torches(state, options),
-        'can_open_swamp_tower': lambda state: can_surf(state) or can_use_springboards(state, options)
+        'can_open_swamp_tower': lambda state: can_surf(state, options, "normal") or can_use_springboards(state, options)
     }
 
     # Split the expression by "or" and "and" using regular expressions

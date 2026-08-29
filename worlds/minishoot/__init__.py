@@ -48,7 +48,7 @@ class MinishootWorld(World):
     # This version is checked in the client to ensure that the client and the server are on the same page feature-wise.
     # The client will throw an error to the player if the server is on a different version.
     # This is to avoid issues where a player would use a client with a different version than the APWorld.
-    ap_world_version = "0.5.1"
+    ap_world_version = "0.6.0"
 
     def create_item(self, name: str) -> MinishootItem:
         if name not in item_table:
@@ -133,17 +133,17 @@ class MinishootWorld(World):
     
     def get_ignored_items(self) -> List[str]:
         return [
-            "Abyss Map",
-            "Beach Map",
-            "Blue Forest Map",
-            "Desert Map",
+            "Abyss Map", # Replaced
+            "Beach Map", # Replaced
+            "Blue Forest Map", # Replaced
+            "Desert Map", # Replaced
             "Green Map",
             "Junkyard Map",
             "Sunken City Map",
             "Swamp Map",
             "Ancient Astrolabe",
             "Compass",
-            "Explorer"
+            "Explorer" # Replaced
         ]
 
     def get_fallback_items(self) -> List[str]:
@@ -157,11 +157,28 @@ class MinishootWorld(World):
         return self.random.choice(self.get_fallback_items())
 
     def try_create_item(self, item_name: str) -> MinishootItem:
-        name = item_name
-        if name in self.get_ignored_items():
-            name = self.get_filler_item_name()
-        if self.options.progressive_dash.value == 1 and name in ["Dash", "Spirit Dash"]:
+        name = False
+        # Replacements depending on seed options.
+        if self.options.progressive_dash.value == 1 and item_name in ["Dash", "Spirit Dash"]:
             name = "Progressive Dash"
+        elif self.options.surf_sanity.value:
+            # We replace the Surf item and 4 other ignored items with 5 different Surf items, one for each water type.
+            if item_name == "Surf":
+                name = "Clean Surf"
+            elif item_name == "Abyss Map":
+                name = "Blue Surf"
+            elif item_name == "Beach Map":
+                name = "Dirty Surf"
+            elif item_name == "Blue Forest Map":
+                name = "Void Surf"
+            elif item_name == "Desert Map":
+                name = "Golden Surf"
+        elif self.options.completion_goals == "spirit_tower" and item_name == "Explorer":
+            name = "Golden Crystal Heart"
+
+        # Default behavior: if the item is ignored, we replace it with a filler item. If the item is not ignored, we create it normally.
+        if not name:
+            name = self.get_filler_item_name() if item_name in self.get_ignored_items() else item_name
         
         return self.create_item(name)
 
@@ -182,8 +199,6 @@ class MinishootWorld(World):
             quantity = data.quantity_in_item_pool
             if item_name == "Progressive Cannon":
                 quantity -= 1 # The plugin will add the first cannon level automatically.
-            if item_name == "Ancient Tablet" and self.options.completion_goals == "spirit_tower":
-                quantity -= 1 # We remove one Ancient Tablet to make room for the Golden Crystal Heart.
             for i in range(0, quantity):
                 # For dungeon rewards, place them in the vanilla locations.
                 if data.pool == MinishootPool.dungeon_reward:
@@ -325,7 +340,9 @@ class MinishootWorld(World):
             "boostless_spirit_races": self.options.boostless_spirit_races.value,
             "boostless_torch_races": self.options.boostless_torch_races.value,
             "enable_primordial_crystal_logic": self.options.enable_primordial_crystal_logic.value,
+            "primordial_crystal_activation_threshold": self.options.primordial_crystal_activation_threshold.value,
             "progressive_dash": self.options.progressive_dash.value,
+            "surf_sanity": self.options.surf_sanity.value,
             "dashless_gaps": self.options.dashless_gaps.value,
             "completion_goals": self.options.completion_goals.value,
             "ap_world_version": self.ap_world_version

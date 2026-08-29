@@ -23,7 +23,7 @@ try:
 except ImportError:
     from importlib_resources import files  # noqa
 
-with files(resources).joinpath('locations.csv').open() as file:
+with files(resources).joinpath('locations.csv').open(encoding='utf-8-sig') as file:
     reader = csv.reader(file)
     for line, row in enumerate(reader):
         if line == 0:
