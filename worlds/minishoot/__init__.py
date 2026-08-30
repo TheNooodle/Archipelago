@@ -137,7 +137,7 @@ class MinishootWorld(World):
             "Beach Map", # Replaced
             "Blue Forest Map", # Replaced
             "Desert Map", # Replaced
-            "Green Map",
+            "Green Map", # Replaced
             "Junkyard Map",
             "Sunken City Map",
             "Swamp Map",
@@ -161,7 +161,7 @@ class MinishootWorld(World):
         # Replacements depending on seed options.
         if self.options.progressive_dash.value == 1 and item_name in ["Dash", "Spirit Dash"]:
             name = "Progressive Dash"
-        elif self.options.surf_sanity.value:
+        if self.options.surf_sanity.value:
             # We replace the Surf item and 4 other ignored items with 5 different Surf items, one for each water type.
             if item_name == "Surf":
                 name = "Clean Surf"
@@ -173,8 +173,11 @@ class MinishootWorld(World):
                 name = "Void Surf"
             elif item_name == "Desert Map":
                 name = "Golden Surf"
-        elif self.options.completion_goals == "spirit_tower" and item_name == "Explorer":
-            name = "Golden Crystal Heart"
+        if self.options.split_supershot.value:
+            if item_name == "Supershot":
+                name = "Blastshot"
+            elif item_name == "Green Map":
+                name = "Flameshot"
 
         # Default behavior: if the item is ignored, we replace it with a filler item. If the item is not ignored, we create it normally.
         if not name:
@@ -199,6 +202,8 @@ class MinishootWorld(World):
             quantity = data.quantity_in_item_pool
             if item_name == "Progressive Cannon":
                 quantity -= 1 # The plugin will add the first cannon level automatically.
+            if item_name == "Explorer" and self.options.completion_goals == "spirit_tower":
+                quantity -= 1 # We remove the Explorer to make room for the Golden Crystal Heart.
             for i in range(0, quantity):
                 # For dungeon rewards, place them in the vanilla locations.
                 if data.pool == MinishootPool.dungeon_reward:
@@ -343,6 +348,7 @@ class MinishootWorld(World):
             "primordial_crystal_activation_threshold": self.options.primordial_crystal_activation_threshold.value,
             "progressive_dash": self.options.progressive_dash.value,
             "surf_sanity": self.options.surf_sanity.value,
+            "split_supershot": self.options.split_supershot.value,
             "dashless_gaps": self.options.dashless_gaps.value,
             "completion_goals": self.options.completion_goals.value,
             "ap_world_version": self.ap_world_version

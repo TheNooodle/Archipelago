@@ -192,6 +192,16 @@ class SurfSanity(Toggle):
     internal_name = "surf_sanity"
     display_name = "Surf Sanity"
 
+class SplitSupershot(Toggle):
+    """
+    When enabled, the Supershot is broken down into 2 distinct items.
+    Blastshot allows you to break rocks and walls.
+    Flameshot allows you to light torches.
+    Having one these two items will unlock Supershot for combat usage.
+    """
+    internal_name = "split_supershot"
+    display_name = "Split Supershot"
+
 class DashlessGaps(Choice):
     """
     When set on "Needs Dash", you will need the dash to cross gaps, regardless of their size.
@@ -243,5 +253,6 @@ class MinishootOptions(PerGameCommonOptions):
     primordial_crystal_activation_threshold: PrimordialCrystalActivationThreshold
     progressive_dash: ProgressiveDash
     surf_sanity: SurfSanity
+    split_supershot: SplitSupershot
     dashless_gaps: DashlessGaps
     completion_goals: CompletionGoals
