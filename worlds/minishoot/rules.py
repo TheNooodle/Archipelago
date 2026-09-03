@@ -84,7 +84,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         return state.has(spirit_dash, player)
     
     def can_surf(state: CollectionState, options: MinishootOptions, water_type: str = "normal") -> bool:
-        if not options.surf_sanity.value:
+        if not options.split_surf.value:
             return state.has(surf, player)
         else:
             if water_type == "normal":

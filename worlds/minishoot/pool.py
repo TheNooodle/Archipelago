@@ -16,7 +16,7 @@ def get_item_pool(item_name: str) -> MinishootPool:
     item_pool_mapping = {
         'Default': MinishootPool.default,
         'XP Crystals': MinishootPool.xp_crystals,
-        'NPC': MinishootPool.npc,
+        'Town NPC': MinishootPool.npc,
         'Scarab': MinishootPool.scarab,
         'Spirit': MinishootPool.spirit,
         'Dungeon Small Key': MinishootPool.dungeon_small_key,

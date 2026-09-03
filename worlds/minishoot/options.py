@@ -2,47 +2,47 @@ from dataclasses import dataclass
 
 from Options import DefaultOnToggle, Range, Toggle, Choice, PerGameCommonOptions
 
-class NpcSanity(Toggle):
+class ShuffleNpcs(Toggle):
     """
     Randomizes the freeable NPCs in the world, making them obtainable from any source.
     """
-    internal_name = "npc_sanity"
-    display_name = "NPC Sanity"
+    internal_name = "shuffle_npcs"
+    display_name = "Shuffle NPCs"
 
-class ScarabSanity(Toggle):
+class ShuffleScarabs(Toggle):
     """
     Randomizes the scarabs in the world.
     """
-    internal_name = "scarab_sanity"
-    display_name = "Scarab Sanity"
+    internal_name = "shuffle_scarabs"
+    display_name = "Shuffle Scarabs"
 
-class SpiritSanity(Toggle):
+class ShuffleSpirits(Toggle):
     """
     Randomizes the spirit in the world.
     """
-    internal_name = "spirit_sanity"
-    display_name = "Spirit Sanity"
+    internal_name = "shuffle_spirits"
+    display_name = "Shuffle Spirits"
 
-class ShardSanity(Toggle):
+class ShuffleXpShards(Toggle):
     """
     Randomizes the XP shards "groups" (not individual crystals) in the world.
     """
-    internal_name = "shard_sanity"
-    display_name = "Shard Sanity"
+    internal_name = "shuffle_xp_shards"
+    display_name = "Shuffle XP Shards"
 
-class KeySanity(Toggle):
+class ShuffleSmallKeys(Toggle):
     """
     Randomizes the small keys of dungeons in the world.
     """
-    internal_name = "key_sanity"
-    display_name = "Key Sanity"
+    internal_name = "shuffle_small_keys"
+    display_name = "Shuffle Small Keys"
 
-class BossKeySanity(Toggle):
+class ShuffleBossKeys(Toggle):
     """
     Randomizes the boss keys of dungeons in the world.
     """
-    internal_name = "boss_key_sanity"
-    display_name = "Boss Key Sanity"
+    internal_name = "shuffle_boss_keys"
+    display_name = "Shuffle Boss Keys"
 
 class AddTrapItems(Toggle):
     """
@@ -183,14 +183,14 @@ class ProgressiveDash(Toggle):
     internal_name = "progressive_dash"
     display_name = "Progressive Dash"
 
-class SurfSanity(Toggle):
+class SplitSurf(Toggle):
     """
     When enabled, each water type requires its own Surf item to be navigable.
     Replace the existing Surf item with 5 different Surf items, one for each water type.
     Water types are: Normal, Blue, Soiled, Dungeon and Gold.
     """
-    internal_name = "surf_sanity"
-    display_name = "Surf Sanity"
+    internal_name = "split_surf"
+    display_name = "Split Surf"
 
 class SplitSupershot(Toggle):
     """
@@ -232,12 +232,12 @@ class CompletionGoals(Choice):
 
 @dataclass
 class MinishootOptions(PerGameCommonOptions):
-    npc_sanity: NpcSanity
-    scarab_sanity: ScarabSanity
-    spirit_sanity: SpiritSanity
-    shard_sanity: ShardSanity
-    key_sanity: KeySanity
-    boss_key_sanity: BossKeySanity
+    shuffle_npcs: ShuffleNpcs
+    shuffle_scarabs: ShuffleScarabs
+    shuffle_spirits: ShuffleSpirits
+    shuffle_xp_shards: ShuffleXpShards
+    shuffle_small_keys: ShuffleSmallKeys
+    shuffle_boss_keys: ShuffleBossKeys
     add_trap_items: AddTrapItems
     trap_items_appearance: TrapItemsAppearance
     shop_cost_modifier: ShopCostModifier
@@ -252,7 +252,7 @@ class MinishootOptions(PerGameCommonOptions):
     enable_primordial_crystal_logic: EnablePrimordialCrystalLogic
     primordial_crystal_activation_threshold: PrimordialCrystalActivationThreshold
     progressive_dash: ProgressiveDash
-    surf_sanity: SurfSanity
+    split_surf: SplitSurf
     split_supershot: SplitSupershot
     dashless_gaps: DashlessGaps
     completion_goals: CompletionGoals

@@ -120,13 +120,13 @@ class MinishootWorld(World):
 
     def get_randomized_pools(self) -> List[MinishootPool]:
         randomized_pools = [MinishootPool.default, MinishootPool.dungeon_small_key, MinishootPool.dungeon_big_key, MinishootPool.dungeon_reward]
-        if self.options.npc_sanity:
+        if self.options.shuffle_npcs:
             randomized_pools.append(MinishootPool.npc)
-        if self.options.shard_sanity:
+        if self.options.shuffle_xp_shards:
             randomized_pools.append(MinishootPool.xp_crystals)
-        if self.options.scarab_sanity:
+        if self.options.shuffle_scarabs:
             randomized_pools.append(MinishootPool.scarab)
-        if self.options.spirit_sanity:
+        if self.options.shuffle_spirits:
             randomized_pools.append(MinishootPool.spirit)
 
         return randomized_pools
@@ -161,7 +161,7 @@ class MinishootWorld(World):
         # Replacements depending on seed options.
         if self.options.progressive_dash.value == 1 and item_name in ["Dash", "Spirit Dash"]:
             name = "Progressive Dash"
-        if self.options.surf_sanity.value:
+        if self.options.split_surf.value:
             # We replace the Surf item and 4 other ignored items with 5 different Surf items, one for each water type.
             if item_name == "Surf":
                 name = "Clean Surf"
@@ -211,15 +211,15 @@ class MinishootWorld(World):
                     if not location:
                         raise ValueError(f"Could not find location for dungeon reward {item_name}")
                     location.place_locked_item(self.try_create_item(item_name))
-                # For dungeon keys, place them in the appropriate dungeon (if no keysanity).
-                elif data.pool == MinishootPool.dungeon_small_key and not self.options.key_sanity:
+                # For dungeon keys, place them in the appropriate dungeon (if not shuffled).
+                elif data.pool == MinishootPool.dungeon_small_key and not self.options.shuffle_small_keys:
                     dungeon = get_dungeon_for_item(item_name)
 
                     if not dungeon:
                         raise ValueError(f"Could not find dungeon for key {item_name}")
                     self.pre_fill_small_key_item_datas_by_dungeons[dungeon].append(data)
                     self.pre_fill_items.append(self.try_create_item(item_name))
-                elif data.pool == MinishootPool.dungeon_big_key and not self.options.boss_key_sanity:
+                elif data.pool == MinishootPool.dungeon_big_key and not self.options.shuffle_boss_keys:
                     dungeon = get_dungeon_for_item(item_name)
 
                     if not dungeon:
@@ -327,12 +327,12 @@ class MinishootWorld(World):
             
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data: Dict[str, Any] = {
-            "npc_sanity": self.options.npc_sanity.value,
-            "scarab_sanity": self.options.scarab_sanity.value,
-            "spirit_sanity": self.options.spirit_sanity.value,
-            "shard_sanity": self.options.shard_sanity.value,
-            "key_sanity": self.options.key_sanity.value,
-            "boss_key_sanity": self.options.boss_key_sanity.value,
+            "shuffle_npcs": self.options.shuffle_npcs.value,
+            "shuffle_scarabs": self.options.shuffle_scarabs.value,
+            "shuffle_spirits": self.options.shuffle_spirits.value,
+            "shuffle_xp_shards": self.options.shuffle_xp_shards.value,
+            "shuffle_small_keys": self.options.shuffle_small_keys.value,
+            "shuffle_boss_keys": self.options.shuffle_boss_keys.value,
             "add_trap_items": self.options.add_trap_items.value,
             "trap_items_appearance": self.options.trap_items_appearance.value,
             "shop_cost_modifier": self.options.shop_cost_modifier.value,
@@ -347,7 +347,7 @@ class MinishootWorld(World):
             "enable_primordial_crystal_logic": self.options.enable_primordial_crystal_logic.value,
             "primordial_crystal_activation_threshold": self.options.primordial_crystal_activation_threshold.value,
             "progressive_dash": self.options.progressive_dash.value,
-            "surf_sanity": self.options.surf_sanity.value,
+            "split_surf": self.options.split_surf.value,
             "split_supershot": self.options.split_supershot.value,
             "dashless_gaps": self.options.dashless_gaps.value,
             "completion_goals": self.options.completion_goals.value,
