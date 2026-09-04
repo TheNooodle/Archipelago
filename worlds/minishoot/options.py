@@ -183,6 +183,22 @@ class ProgressiveDash(Toggle):
     internal_name = "progressive_dash"
     display_name = "Progressive Dash"
 
+class ProgressiveBoost(Toggle):
+    """
+    When enabled, the game will fuse the Boost and the Advanced Energy module into two cumulative progressive upgrades.
+    The first upgrade will always allow you to boost, and the second will reduce the energy cost of boosting.
+    """
+    internal_name = "progressive_boost"
+    display_name = "Progressive Boost"
+
+class ProgressivePowers(Toggle):
+    """
+    When enabled, the game will fuse all powers and the corresponding idols into two cumulative progressive upgrades.
+    The first upgrade will always allow you to use the corresponding power, and the second will grant you the idol's effect.
+    """
+    internal_name = "progressive_powers"
+    display_name = "Progressive Powers"
+
 class SplitSurf(Toggle):
     """
     When enabled, each water type requires its own Surf item to be navigable.
@@ -252,6 +268,8 @@ class MinishootOptions(PerGameCommonOptions):
     enable_primordial_crystal_logic: EnablePrimordialCrystalLogic
     primordial_crystal_activation_threshold: PrimordialCrystalActivationThreshold
     progressive_dash: ProgressiveDash
+    progressive_boost: ProgressiveBoost
+    progressive_powers: ProgressivePowers
     split_surf: SplitSurf
     split_supershot: SplitSupershot
     dashless_gaps: DashlessGaps

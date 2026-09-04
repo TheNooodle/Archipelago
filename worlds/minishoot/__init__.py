@@ -161,6 +161,15 @@ class MinishootWorld(World):
         # Replacements depending on seed options.
         if self.options.progressive_dash.value == 1 and item_name in ["Dash", "Spirit Dash"]:
             name = "Progressive Dash"
+        if self.options.progressive_boost.value == 1 and item_name in ["Boost", "Advanced Energy"]:
+            name = "Progressive Boost"
+        if self.options.progressive_powers.value == 1:
+            if item_name in ["Power of protection", "Idol of protection"]:
+                name = "Progressive Power of protection"
+            elif item_name in ["Power of time", "Idol of time"]:
+                name = "Progressive Power of time"
+            elif item_name in ["Power of spirits", "Idol of spirits"]:
+                name = "Progressive Power of spirits"
         if self.options.split_surf.value:
             # We replace the Surf item and 4 other ignored items with 5 different Surf items, one for each water type.
             if item_name == "Surf":
@@ -347,6 +356,8 @@ class MinishootWorld(World):
             "enable_primordial_crystal_logic": self.options.enable_primordial_crystal_logic.value,
             "primordial_crystal_activation_threshold": self.options.primordial_crystal_activation_threshold.value,
             "progressive_dash": self.options.progressive_dash.value,
+            "progressive_boost": self.options.progressive_boost.value,
+            "progressive_powers": self.options.progressive_powers.value,
             "split_surf": self.options.split_surf.value,
             "split_supershot": self.options.split_supershot.value,
             "dashless_gaps": self.options.dashless_gaps.value,

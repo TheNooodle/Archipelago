@@ -25,9 +25,11 @@ family_parent_2 = 'Family Parent 2'
 flameshot = 'Flameshot'
 mercant = 'Merchant'
 power_of_protection = "Power of protection"
+progressive_power_of_protection = "Progressive Power of protection"
 primordial_crystal = "Primordial Crystal"
 progressive_cannon = 'Progressive Cannon'
 progressive_dash = 'Progressive Dash'
+progressive_boost = 'Progressive Boost'
 scarab = "Scarab"
 scarab_collector = 'Scarab Collector'
 scarab_key = 'Scarab Key'
@@ -68,6 +70,10 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
     player = world.player
     options = world.options
 
+    def can_obtain_super_crystals(state: CollectionState, options: MinishootOptions) -> bool:
+        # @TODO: Temporarly set to being able to clear Dungeon 5, as the logic for this is not yet implemented.
+        return can_use_springboards(state, options) and can_fight(state, options, 5) and can_dash(state, options) and can_destroy_walls(state, options) and can_light_torches(state, options) and can_surf(state, options, "normal") and can_surf(state, options, "soiled") and can_surf(state, options, "dungeon") and can_surf(state, options, "gold")
+
     def can_fight(state: CollectionState, options: MinishootOptions, level: int = 1) -> bool:
         if not options.ignore_cannon_level_requirements:
             return state.has(progressive_cannon, player, level - 1)
@@ -77,6 +83,16 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         if options.progressive_dash:
             return state.has(progressive_dash, player)
         return state.has(dash, player)
+
+    def can_boost(state: CollectionState, options: MinishootOptions) -> bool:
+        if options.progressive_boost:
+            return state.has(progressive_boost, player)
+        return state.has(boost, player)
+
+    def can_use_power_of_protection(state: CollectionState, options: MinishootOptions) -> bool:
+        if options.progressive_powers:
+            return state.has(progressive_power_of_protection, player)
+        return state.has(power_of_protection, player)
     
     def can_spirit_dash(state: CollectionState, options: MinishootOptions) -> bool:
         if options.progressive_dash:
@@ -106,24 +122,24 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
     
     def can_use_springboards(state: CollectionState, options: MinishootOptions) -> bool:
         if options.boostless_springboards:
-            return can_dash(state, options) or state.has(boost, player)
-        return state.has(boost, player)
+            return can_dash(state, options) or can_boost(state, options)
+        return can_boost(state, options)
     
     def can_race_spirits(state: CollectionState, options: MinishootOptions) -> bool:
         if options.boostless_spirit_races:
-            return can_dash(state, options) or state.has(boost, player)
-        return state.has(boost, player)
+            return can_dash(state, options) or can_boost(state, options)
+        return can_boost(state, options)
     
     def can_race_torches(state: CollectionState, options: MinishootOptions) -> bool:
         if options.boostless_torch_races:
             return True
-        return state.has(boost, player)
+        return can_boost(state, options)
     
     def can_cross_gaps(state: CollectionState, options: MinishootOptions, size: str = "normal") -> bool:
         if can_dash(state, options):
             return True
         
-        if (size == "tight" or size == "very_tight") and options.dashless_gaps > 0 and state.has(boost, player):
+        if (size == "tight" or size == "very_tight") and options.dashless_gaps > 0 and can_boost(state, options):
             return True
         
         if size == "very_tight" and options.dashless_gaps == 2:
@@ -139,11 +155,6 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
             return True
         return state.has(scarab, player, index1 * options.scarab_items_cost.value)
 
-    def can_use_supershot(state: CollectionState, options: MinishootOptions) -> bool:
-        if options.split_supershot.value:
-            return state.has(blastshot, player) and state.has(flameshot, player)
-        return state.has(supershot, player)
-
     def can_light_torches(state: CollectionState, options: MinishootOptions) -> bool:
         if options.split_supershot.value:
             return state.has(flameshot, player)
@@ -158,7 +169,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'true': lambda state: True,
         'can_free_blacksmith': lambda state: state.has(blacksmith, player),
         'can_free_mercant': lambda state: state.has(mercant, player),
-        'can_obtain_super_crystals': lambda state, arg: can_dash(state, options) and can_use_supershot(state, options) and can_surf(state, options, "normal"), # TODO: Implement this
+        'can_obtain_super_crystals': lambda state, arg: can_obtain_super_crystals(state, options),
         'can_fight': lambda state: can_fight(state, options, 1),
         'can_fight_lvl2': lambda state: can_fight(state, options, 2),
         'can_fight_lvl3': lambda state: can_fight(state, options, 3),
@@ -172,7 +183,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_surf_soiled': lambda state: can_surf(state, options, "soiled"),
         'can_surf_dungeon': lambda state: can_surf(state, options, "dungeon"),
         'can_surf_gold': lambda state: can_surf(state, options, "gold"),
-        'can_boost': lambda state: state.has(boost, player),
+        'can_boost': lambda state: can_boost(state, options),
         'can_destroy_bushes': lambda state: True,
         'can_destroy_ruins': lambda state: True,
         'have_d1_keys': lambda state, arg: state.has(d1_small_key, player, arg),
@@ -211,7 +222,7 @@ def simple_parse(expression: str, state: CollectionState, world) -> bool:
         'can_free_family': lambda state: state.has(family_child, player) and state.has(family_parent_1, player) and state.has(family_parent_2, player),
         'forest_is_blocked': lambda state: options.blocked_forest,
         'forest_is_open': lambda state: not options.blocked_forest,
-        'can_blast_crystals': lambda state: state.has(power_of_protection, player),
+        'can_blast_crystals': lambda state: can_use_power_of_protection(state, options),
         'can_destroy_trees': lambda state: can_destroy_trees(state, options),
         'can_use_springboards': lambda state: can_use_springboards(state, options),
         'can_race_spirits': lambda state: can_race_spirits(state, options),
